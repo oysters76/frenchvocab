@@ -84,3 +84,66 @@ body{
   font-size: 25px;
   margin-top: -50px;
 }
+
+.app-container-game{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: #312A2A;
+    width:100%;
+    height:100%;
+}
+
+.content-bar{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+.content-word{
+  font-family: Roboto;
+  color: white;
+  text-transform: uppercase;
+  font-size: 100px;
+  width: 80%;
+  text-align: center;
+}
+
+.btn-bar{
+  display: flex;
+  width: 100%;
+  margin-top: 20%;
+  justify-content: center;
+}
+
+.word-btn{
+  margin-left: 20px;
+  padding: 15px 50px 15px 50px;
+  border-radius: 38px;
+  border-style: none;
+  color: white;
+  background: black;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.word-btn:hover{
+  background: white;
+  cursor: pointer;
+  color: black;
+}
+
+.app-back-btn{
+  width:50px;
+  height:50px;
+  padding: 20px;
+  transition: 0.4s;
+}
+
+
+.app-back-btn:hover{
+  cursor: pointer;
+  background: black;
+}

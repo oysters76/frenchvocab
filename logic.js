@@ -1,6 +1,6 @@
 
 function checkIfPlayerObjExists(){
-  return false;
+  return true;
 }
 
 function loadPlayerObj(){
@@ -20,7 +20,14 @@ function onAppBtnClick(e){
   fadeInOutHome(innerContainer, true, function(){
     mainContainer.innerHTML = "";
     document.removeEventListener('mousemove', moveBoxShadow);
+    buildGameStage("comme", ["hello", "world", "man", "go"])
   });
+}
+
+function onBackBtnClick(e){
+  mainContainer.innerHTML = "";
+  _toggleAppContainer(true);
+  showIntroPrompt();
 }
 
 function buildNewIntroPrompt(){
@@ -67,6 +74,35 @@ function buildProgressIntroPrompt(masteryPoints, level){
   animateProgressBar(progressBar, masteryPoints, null);
   animateMasteryCount(masteryLbl, masteryPoints, null);
   animateLevelCount(levelLbl, masteryPoints, level, null);
+}
+
+function buildGameStage(word, options){ //ATTN: assumes len(options) == 4
+  _toggleAppContainer(false);
+
+  let appBar = _buildDiv("appBar", "app-bar");
+  let backIcon = BACK_ICON;
+  appBar.innerHTML = backIcon;
+
+  let contentBar = _buildDiv("contentBar", "content-bar");
+  let contentWord = _buildLbl("contentWord", "content-word", word);
+  contentBar.appendChild(contentWord);
+
+  let btnBar = _buildDiv("btnBar", "btn-bar");
+  options.forEach((item, i) => {
+    let wordBtn = _buildBtn("wordBtn" + i, "word-btn", item);
+    btnBar.appendChild(wordBtn);
+  });
+
+  mainContainer.appendChild(appBar);
+  mainContainer.appendChild(contentBar);
+  mainContainer.appendChild(btnBar);
+}
+
+function _toggleAppContainer(isAppContainer){
+  let addClass = isAppContainer ? "app-container" : "app-container-game";
+  let removeClass = isAppContainer ? "app-container-game" : "app-container";
+  mainContainer.classList.remove(removeClass);
+  mainContainer.classList.add(addClass);
 }
 
 function _buildLbl(id, classList, text){
