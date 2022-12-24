@@ -33,6 +33,10 @@ body{
   font-size: 100px;
 }
 
+.app-heading-continue{
+  font-size:70px;
+}
+
 .app-welcome{
   width: 50%;
   text-align: center;
@@ -54,4 +58,29 @@ body{
   color:black;
   cursor: pointer;
   font-weight: bold;
+}
+
+.progress-background{
+  background-color: black;
+  border-radius: 37px;
+  width:80%;
+  height: 10%;
+}
+
+.progress-foreground{
+  background-color: white;
+  height: calc(100% - 5px);
+  width: 10%;
+  border: 2px solid black;
+  top: 0;
+  border-radius: 37px;
+}
+
+.app-precentage{
+  font-size: 30px;
+}
+
+.app-level{
+  font-size: 25px;
+  margin-top: -50px;
 }

@@ -7,22 +7,14 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
   </head>
   <body>
-     <div class="app-container">
-       <div id="innerContainer" class="inner-container">
-         <label id="heading" class="app-heading">vocab!</label>
-         <label id="welcomeMsg" class="app-welcome">begin your journey in memeorzing the top 1000 words in french</label>
-         <button id="appBtn" class="app-btn">let's do this</button>
-       </div>
+     <div id="mainContainer" class="app-container">
      </div>
        <script src="strings.js" type="text/javascript"></script>
        <script src="effects.js" type="text/javascript"></script>
        <script src="logic.js" type="text/javascript"></script>
        <script>
          window.onload = function(e){
-            heading.innerHTML = APP_HEADING;
-            welcomeMsg.innerHTML = APP_DESC;
-            appBtn.innerHTML = APP_BTN_TEXT_FR;
-            applyEffects();
+            showIntroPrompt();
          }
      </script>
   </body>
