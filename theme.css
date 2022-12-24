@@ -1,19 +1,57 @@
-.app-container{
+body{
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto;
+}
 
+.app-container{
+  background: #312A2A;
+  width:100%;
+  height:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .inner-container{
-
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 60%;
+  width: 25%;
+  border-radius: 38px;
+  box-shadow: 0px 20px 4px rgba(0, 0, 0, 0.75);
+  background-color: #D9D9D9;
 }
 
 .app-heading{
-
+  font-size: 100px;
 }
 
 .app-welcome{
-
+  width: 50%;
+  text-align: center;
+  font-size: 25px;
 }
 
 .app-btn{
-  
+  padding: 15px 50px 15px 50px;
+  border-radius: 38px;
+  border-style: none;
+  color: white;
+  background: black;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.app-btn:hover{
+  background-color: white;
+  color:black;
+  cursor: pointer;
+  font-weight: bold;
 }
