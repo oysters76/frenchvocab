@@ -1,21 +1,7 @@
-
-function checkIfPlayerObjExists(){
-  return localStorage.getItem("player")
-}
-
-function loadPlayerObj(){
-  return null;
-}
-
-function createBlankPlayerObj(){
-  localStorage.setItem("player", "yes");
-  localStorage.setItem("level", "1");
-  localStorage.setItem("mastery", "0");
-}
-
 function showIntroPrompt(){
   if (checkIfPlayerObjExists()){
-     buildProgressIntroPrompt(80, 1);
+     let playerData = loadPlayerObj();
+     buildProgressIntroPrompt(playerData[0], playerData[1]);
   }else{
     buildNewIntroPrompt();
   }
@@ -28,7 +14,7 @@ function onAppBtnClick(e){
     document.removeEventListener('mousemove', moveBoxShadow);
     if (!checkIfPlayerObjExists())
       createBlankPlayerObj()
-      
+
     buildGameStage("comme", ["hello", "world", "man", "go"])
   });
 }
@@ -98,13 +84,30 @@ function buildGameStage(word, options){ //ATTN: assumes len(options) == 4
 
   let btnBar = _buildDiv("btnBar", "btn-bar");
   options.forEach((item, i) => {
-    let wordBtn = _buildBtn("wordBtn" + i, "word-btn", item);
+    let wordBtn = _buildBtn(item.id, "word-btn", item.name);
     btnBar.appendChild(wordBtn);
+
+    wordBtn.addEventListener('click', clickWordBtn);
   });
 
   mainContainer.appendChild(appBar);
   mainContainer.appendChild(contentBar);
   mainContainer.appendChild(btnBar);
+}
+
+function moveViewToNextWord(){
+
+}
+
+function clickWordBtn(e){
+  let id = e.target.id;
+  isCorrect = checkIfCorrect(id);
+  updatePlayerObj(id, isCorrect);
+  let audioClip = isCorrect ? CORRECT_AUDIO_CLIP : WRONG_AUDIO_CLIP;
+  audioClip.onended = function(){
+    moveViewToNextWord();
+  }
+  audioClip.play();
 }
 
 function _toggleAppContainer(isAppContainer){

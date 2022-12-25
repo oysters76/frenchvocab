@@ -2,6 +2,14 @@ const TOTAL_WORDS = 1000
 const TOTAL_OPTIONS = 4;
 const WORD_SET_COUNT = 10;
 
+let gameState = {
+
+}
+
+function checkIfCorrect(id){
+  return true;
+}
+
 function constructWordAndOptions(level, indsToSkip){ //ATTN: level should be between 1 and 100 or equal
   if (level < 1 || level > (TOTAL_WORDS/WORD_SET_COUNT))
     return;
@@ -21,6 +29,48 @@ function constructWordAndOptions(level, indsToSkip){ //ATTN: level should be bet
 
   return [ind, optionInds];
 }
+
+function updatePlayerObj(ind, isCorrect){
+  let key = isCorrect ? "playerCorrect" : "playerWrong";
+  playerCompleted = localStorage.getItem("playerCompleted");
+  playerScore = localStorage.getItem(key);
+  if (playerScore == null)
+    playerScore = []
+  else {
+    playerScore = JSON.parse(playerScore);
+  }
+  playerScore.push(ind);
+  if (playerCompleted == null)
+    playerCompleted = []
+  else {
+    playerCompleted = JSON.parse(playerCompleted)
+  }
+  playerCompleted.push(ind)
+  localStorage.setItem("playerCompleted", JSON.stringify(playerCompleted));
+  localStorage.setItem(key, JSON.stringify(playerScore));
+}
+
+function checkIfPlayerObjExists(){
+  return localStorage.getItem("player")
+}
+
+function loadPlayerObj(){
+  let playerCorrect = localStorage.getItem("playerCorrect");
+  let playerLevel = localStorage.getItem("level");
+  if (playerCorrect == null)
+    return [0, playerLevel];
+
+  playerCorrect = JSON.parse(playerCorrect);
+  localStorage.setItem("mastery", playerCorrect.length);
+  return [playerCorrect.length, playerLevel]
+}
+
+function createBlankPlayerObj(){
+  localStorage.setItem("player", "yes");
+  localStorage.setItem("level", "1");
+  localStorage.setItem("mastery", "0");
+}
+
 
 function _getInds(s, e, indsToSkip){
   let inds = []

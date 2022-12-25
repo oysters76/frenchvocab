@@ -28,7 +28,6 @@ function runAllTests(){
   test_constructWordAndOptions(40, [20,30,23, 25, 15]);
 }
 
-
 function assert(condition, message) {
     if (!condition) {
         throw message || "Assertion failed";
