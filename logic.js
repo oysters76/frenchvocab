@@ -1,10 +1,16 @@
 
 function checkIfPlayerObjExists(){
-  return true;
+  return localStorage.getItem("player")
 }
 
 function loadPlayerObj(){
   return null;
+}
+
+function createBlankPlayerObj(){
+  localStorage.setItem("player", "yes");
+  localStorage.setItem("level", "1");
+  localStorage.setItem("mastery", "0");
 }
 
 function showIntroPrompt(){
@@ -20,6 +26,9 @@ function onAppBtnClick(e){
   fadeInOutHome(innerContainer, true, function(){
     mainContainer.innerHTML = "";
     document.removeEventListener('mousemove', moveBoxShadow);
+    if (!checkIfPlayerObjExists())
+      createBlankPlayerObj()
+      
     buildGameStage("comme", ["hello", "world", "man", "go"])
   });
 }
