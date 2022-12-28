@@ -2,12 +2,12 @@ const TOTAL_WORDS = 1000
 const TOTAL_OPTIONS = 4;
 const WORD_SET_COUNT = 10;
 
-let gameState = {
-
+function _getFrench(ind){
+  return WORD_BANK.FIELD2[ind];
 }
 
-function checkIfCorrect(id){
-  return true;
+function _getEnglish(ind){
+  return WORD_BANK.FIELD3[ind];
 }
 
 function constructWordAndOptions(level, indsToSkip){ //ATTN: level should be between 1 and 100 or equal
@@ -18,9 +18,8 @@ function constructWordAndOptions(level, indsToSkip){ //ATTN: level should be bet
   endRange = level * 10 - 1;
   inds = _getInds(startRange, endRange, indsToSkip);
   ind = _randomInd(inds)
-  inds = _removeInd(inds, ind)
-
-  optionInds = []
+  optionInds = [ind]
+  inds = _getInds(startRange, endRange, [ind]);
   for (let i = 0; i < TOTAL_OPTIONS - 1; i++){
     optionInd = _randomInd(inds);
     inds = _removeInd(inds, optionInd);
@@ -30,45 +29,51 @@ function constructWordAndOptions(level, indsToSkip){ //ATTN: level should be bet
   return [ind, optionInds];
 }
 
-function updatePlayerObj(ind, isCorrect){
-  let key = isCorrect ? "playerCorrect" : "playerWrong";
-  playerCompleted = localStorage.getItem("playerCompleted");
-  playerScore = localStorage.getItem(key);
-  if (playerScore == null)
-    playerScore = []
-  else {
-    playerScore = JSON.parse(playerScore);
+function getNewQuestion(callback){
+  let playerLevel = state.getLevel()
+  let encounteredWordSize = state.getTotalEncounteredWords();
+
+  if (encounteredWordSize >= (playerLevel*WORD_SET_COUNT)){
+    let isLevelUp = state.getTotalCorrectWords() >= ((playerLevel*WORD_SET_COUNT)/2);
+    let action = isLevelUp ? INCREASE_PLAYER_LEVEL_ACTION : DECREASE_PLAYER_LEVEL_ACTION;
+    emitAction(action, null, null);
+    obj = {
+      messageToUser: isLevelUp ? APP_LEVEL_UP_MSG : APP_LEVEL_DOWN_MSG,
+      isEnd: true
+    }
+    callback(obj);
+    return;
   }
-  playerScore.push(ind);
-  if (playerCompleted == null)
-    playerCompleted = []
-  else {
-    playerCompleted = JSON.parse(playerCompleted)
-  }
-  playerCompleted.push(ind)
-  localStorage.setItem("playerCompleted", JSON.stringify(playerCompleted));
-  localStorage.setItem(key, JSON.stringify(playerScore));
+
+  let res = constructWordAndOptions(state.getLevel(), state.getEncountedWords());
+
+  let ind = res[0]
+  let optionInds = res[1]
+  let word = _getFrench(ind);
+  let indEngWord = _getEnglish(ind);
+  let options = []
+  optionInds.forEach((item, i) => {
+    option = {
+      id: item,
+      name: _getEnglish(item)
+    }
+    options.push(option);
+  });
+  options = _randomShuffle(options);
+  emitAction(SET_CURRENT_OPTIONS, {value:options}, null);
+  emitAction(REPLACE_CURRENT_CORRECT_WORD, {value: ind}, callback);
+}
+
+function updateState(ind){ //Called when player makes a choice
+  let isCorrect = state.checkCorrectInd(ind);
+  let action = isCorrect ? ADD_CORRECT_WORD : ADD_INCORRECT_WORD;
+  emitAction(ADD_ENCOUNTERED_WORD, {value:state.getCorrectInd()}, null);
+  emitAction(action, {value:state.getCorrectInd()}, null);
+  return isCorrect;
 }
 
 function checkIfPlayerObjExists(){
-  return localStorage.getItem("player")
-}
-
-function loadPlayerObj(){
-  let playerCorrect = localStorage.getItem("playerCorrect");
-  let playerLevel = localStorage.getItem("level");
-  if (playerCorrect == null)
-    return [0, playerLevel];
-
-  playerCorrect = JSON.parse(playerCorrect);
-  localStorage.setItem("mastery", playerCorrect.length);
-  return [playerCorrect.length, playerLevel]
-}
-
-function createBlankPlayerObj(){
-  localStorage.setItem("player", "yes");
-  localStorage.setItem("level", "1");
-  localStorage.setItem("mastery", "0");
+  return localStorage.getItem("state")
 }
 
 
@@ -87,6 +92,16 @@ function _getInds(s, e, indsToSkip){
     inds.push(i);
   }
   return inds;
+}
+
+function _randomShuffle(array){
+  for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
 }
 
 function _randomInd(inds){

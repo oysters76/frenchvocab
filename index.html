@@ -9,6 +9,7 @@
   <body>
      <div id="mainContainer" class="app-container">
      </div>
+       <script src="state.js" type="text/javascript"></script>
        <script src="strings.js" type="text/javascript"></script>
        <script src="effects.js" type="text/javascript"></script>
        <script src="game.js" type="text/javascript"></script>
@@ -16,6 +17,7 @@
        <script src="tests.js" type="text/javascript"></script>
        <script>
          window.onload = function(e){
+             state.init();
              showIntroPrompt();
              if (IS_TEST_ENABLE){
                runAllTests();

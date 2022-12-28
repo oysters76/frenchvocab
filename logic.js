@@ -1,7 +1,6 @@
 function showIntroPrompt(){
   if (checkIfPlayerObjExists()){
-     let playerData = loadPlayerObj();
-     buildProgressIntroPrompt(playerData[0], playerData[1]);
+     buildProgressIntroPrompt(state.getMastery(), state.getLevel());
   }else{
     buildNewIntroPrompt();
   }
@@ -12,17 +11,18 @@ function onAppBtnClick(e){
   fadeInOutHome(innerContainer, true, function(){
     mainContainer.innerHTML = "";
     document.removeEventListener('mousemove', moveBoxShadow);
-    if (!checkIfPlayerObjExists())
-      createBlankPlayerObj()
-
-    buildGameStage("comme", ["hello", "world", "man", "go"])
+    showNewQuestion(true);
   });
 }
 
-function onBackBtnClick(e){
+function goBackToHome(){
   mainContainer.innerHTML = "";
   _toggleAppContainer(true);
   showIntroPrompt();
+}
+
+function onBackBtnClick(e){
+  goBackToHome();
 }
 
 function buildNewIntroPrompt(){
@@ -71,7 +71,7 @@ function buildProgressIntroPrompt(masteryPoints, level){
   animateLevelCount(levelLbl, masteryPoints, level, null);
 }
 
-function buildGameStage(word, options){ //ATTN: assumes len(options) == 4
+function buildGameStage(state){ //ATTN: assumes len(options) == 4
   _toggleAppContainer(false);
 
   let appBar = _buildDiv("appBar", "app-bar");
@@ -79,14 +79,13 @@ function buildGameStage(word, options){ //ATTN: assumes len(options) == 4
   appBar.innerHTML = backIcon;
 
   let contentBar = _buildDiv("contentBar", "content-bar");
-  let contentWord = _buildLbl("contentWord", "content-word", word);
+  let contentWord = _buildLbl("contentWord", "content-word", state.getCurrentFrenchWord());
   contentBar.appendChild(contentWord);
 
   let btnBar = _buildDiv("btnBar", "btn-bar");
-  options.forEach((item, i) => {
+  state.currentOptions.forEach((item, i) => {
     let wordBtn = _buildBtn(item.id, "word-btn", item.name);
     btnBar.appendChild(wordBtn);
-
     wordBtn.addEventListener('click', clickWordBtn);
   });
 
@@ -95,19 +94,39 @@ function buildGameStage(word, options){ //ATTN: assumes len(options) == 4
   mainContainer.appendChild(btnBar);
 }
 
-function moveViewToNextWord(){
-
+function updateGameStage(state){
+  let btns = document.querySelectorAll(".word-btn");
+  btns.forEach((btn, i) => {
+    btn.id = state.currentOptions[i].id;
+    btn.innerHTML = state.currentOptions[i].name;
+  });
+  let lbl = document.querySelector("#contentWord");
+  lbl.innerHTML = state.getCurrentFrenchWord();
 }
 
 function clickWordBtn(e){
   let id = e.target.id;
-  isCorrect = checkIfCorrect(id);
-  updatePlayerObj(id, isCorrect);
+  let isCorrect = updateState(id);
   let audioClip = isCorrect ? CORRECT_AUDIO_CLIP : WRONG_AUDIO_CLIP;
   audioClip.onended = function(){
-    moveViewToNextWord();
+    showNewQuestion(false);
   }
   audioClip.play();
+}
+
+function showNewQuestion(firstTime){
+  getNewQuestion(function(obj){
+    if (obj.isEnd){
+       alert(obj.messageToUser);
+       goBackToHome();
+    }else{
+      if (firstTime){
+        buildGameStage(obj);
+      }else{
+        updateGameStage(obj);
+      }
+    }
+  });
 }
 
 function _toggleAppContainer(isAppContainer){
